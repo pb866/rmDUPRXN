@@ -14,12 +14,27 @@ def retrSTRNG(duprxn):
         i2 = RIND.index('>',RIND.index('='))
         rxn[1] = RIND[i1:i2]
 
-        replSTRNG(dl, dl+rxn[0]-rxn[1], fkpp)
+        replSTRNG(dl-1, dl+rxn[0]-rxn[1], fkpp)
 
 def replSTRNG(dl,rl,fkpp):
 
     print dl,rl,fkpp
     with open(fkpp,'rw') as f:
         ll = f.readlines()
-        print ll[dl-1]
-        print ll[rl-4]
+        drxn = react(ll[dl])
+
+        for l in reversed(xrange(rl)):
+            rrxn = react(ll[l])
+            if drxn == rrxn:
+                break
+
+        print l, rrxn
+
+def react(line):
+
+    edct = line[line.index('}')+1:line.index('=')].strip()
+    prod = line[line.index('=')+1:line.index(':')].split('+')
+    prod = sorted([p.strip() for p in prod])
+
+    return edct,prod
+
