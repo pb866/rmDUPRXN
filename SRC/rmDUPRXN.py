@@ -1,23 +1,23 @@
 import sys
+import lhandle as lh
 reload(sys)
 sys.setdefaultencoding('UTF8')
 
-
 # Retrieve file name from script arguments
 try:
-    ifile = sys.argv[1]
+    ftee = sys.argv[1]
 except:
-    ifile = raw_input("Enter tee file from 'make kpp' process: ")
+    ftee = raw_input("Enter tee file from 'make kpp' process: ")
 
 # Assure input file is one folder level above:
-print ifile[:2]
-if ifile[:2] != '../':
-    ifile = '../'+ifile
+if ftee[:2] != '../':
+    ftee = '../'+ftee
 
-print ifile
 
 # Open input file
-with open(ifile,'r')  as f:
-    lines = f.readlines()
-    for i in range(len(lines)):
-        print lines[i]
+with open(ftee, 'r')  as f:
+# save all lines in an array
+    ll = f.readlines()
+# find warnings about duplicate reactions
+    duprxn = [dr for dr in ll if ": Duplicate equation: " in dr]
+    lh.retrSTRNG(duprxn)
