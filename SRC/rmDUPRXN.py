@@ -20,4 +20,6 @@ with open(ftee, 'r')  as f:
     ll = f.readlines()
 # find warnings about duplicate reactions
     duprxn = [dr for dr in ll if ": Duplicate equation: " in dr]
-    lh.retrSTRNG(duprxn)
+dupind, lkpp = lh.retrSTRNG(duprxn)
+
+lh.wrtKPP(dupind,lkpp)
