@@ -1,78 +1,84 @@
 rmDUPRXN
 ========
 
-Python script to remove duplicate reactions from a kpp file and re-write
-first entry with an overall reaction rate constant as sum of individual
-rate constants. (Currently tested only for replacements in a single kpp
-file.)
+Julia script to merge duplicate reactions in a kpp file by adding up the kinetic
+data and deleting all but the first reaction. Comments in place of the deleted
+reactions point to the new reactions with the merged kinetic data.
+
+A previous and far more complicated python version exists in the _python_ folder,
+but is now depricated. For more information, see the old [README](python/README.md).
 
 The script is designed for the DSMACC version DSMACC-testing from:
-https://github.com/pb866/DSMACC-testing.git
+https://github.com/pb866/DSMACC-testing.git.  
+Follow the instructions below to install and run the script.
+
+
+Installation
+------------
+
+Copy the julia script `rmDUPRXN.jl` and the `jl.mod` folder with the module with
+programme-specific functions to `./mechanisms/programs/` in the DSMACC repository.
+Alternatively, you can clone this repository or create a git submodule in
+`./mechanisms/programs/`.
+
+You will also need a general module for file handling shared by various julia scripts,
+which can be obtained from the [auxdata repository](https://github.com/pb866/auxdata.git).
+Clone the repository or copy the `fhandle.jl` from the `jl.mod` folder to a directory
+of your liking.
 
 
 Using the script
 ----------------
 
-The script reads the warnings about duplicate reactions from the KPP
-screen output from a file. So before the script, run KPP and write the
-stdout to a file, e.g. by:
+The script merges duplicate reactions in the file `ifile` and writes the revised
+mechanism to the file `ofile`. If `ofile` is obsolete, `ifile` will be overwritten.
+Additionally, you need to specify the `directory` of the `fhandle` module or the
+default folder path `/Applications/bin/data/jl.mod/` will be used.  
+If you omit the input file name, you will be ask for it during the execution of
+the script. Run the script with:
 
-```shel
-make kpp | tee make.tee
+```
+julia rmDUPRXN.jl [<ifile> [<ofile> [<directory>]]]
 ```
 
-Run the script _rmDUPRXN_ with the command:
+The script is designed to be placed in `./mechanisms/programs/` in the DSMACC repository
+and be executed either from the main repository folder (`./mechanisms/programs/rmDUPRXN/`)
+or the `./mechanisms/` folder. If run from either of these locations, the folder path
+for the input and output file in the script arguments is optional, if the mechanisms are
+placed in the `mechanisms` folder, and will be added by the script automatically.
 
-```shel
-python rmDUPRXN.py [<input file>]
-```
-
-The scipt has the the optional argument for the tee file name. If
-obsolete, the default name _make.tee_ is used.
-
-Furthermore, the script has to be stored in a folder 1 level below the
-main folder. The designated folder is _AnalysisTools_, but may be changed
-to any folder that is placed in the main _DSMACC_ folder. The kpp file
-must be placed in the _mechanisms_ folder, which is in the main _DSMACC_
-folder. This way, the script can be directly applied in the
-_DSMACC-testing_ environment.
-
-If the tee file name is passed to the script (default or any other name),
-it may be given with the path `../mechanisms/` to use the UNIX auto
-complete function or without it for faster typing of the name. In the
-latter case, the script will add the folder path to the file name.
-
-There is no need to specify the _KPP file name_ as it is derived from
-the _KPP_ warning messages.
+If different directories are used, the below adjustments have to be made in the main
+script `rmDUPRXN.jl`.
 
 
-Structure of the script
------------------------
+Adjusting the script
+--------------------
 
-### Main script _rmDUPRXN_
+The script is designed to be placed in `./mechanisms/programs/rmDUPRXN/` and be
+executed from this folder or the `./mechanisms/` folder in the DSMACC repository.
+If you have any other file structure and your `jl.mod` folder is not in the same
+folder as the main script, you need to push the folder path to `LOAD_PATH` on
+l. 20 of `rmDUPRXN.jl`.
 
-- Reads in tee file name or uses default
-- Retrieves warning messages from KPP screen output
-- Calls _retrRXN_ from _srchRXN_ to generate dictionary with kinetic
-  and mechanistic data and all line numbers of duplicate reactions
-  from KPP warning messages
-- Calls _cmbnRATES_ from _frmtRXN_ to reformat kinetic data and assign
-  an overall rate constant as sum of individual constants (and product
-  of individual constants of same kind)
-- Calls _wrtKPP_ from _fhandle_ to rewrite the KPP file and replace
-  duplicate reactions with one reaction with an overall rate constant
+Furthermore, the script relies on an external module `fhandle`, which can be obtained
+from https://github.com/pb866/auxdata.git. The folder path, where `fhandle` is stored has
+to be specified in the third script argument, if different from the default directory
+`/Applications/bin/data/jl.mod/`. It is convenient to change the default directory
+to your location of `fhandle`, if the script is used regularly, which can be done
+on l. 16 of `rmDUPRXN.jl`.
 
 
-### Library _srchRXN_
+Version history
+===============
 
-- With function _retrRXN_ that loops over warning messages and retrieves
-  line number of duplicate entry, and reaction number of duplicate reactions.
-- _retrRXN_ calls _fndDRXN_ to find the actual line numbers in the KPP file from
-  the warning messsage information.
-- _fndDRXN_ uses _react_ to derive reactants and products from each KPP
-  line rather than comparing the reaction strings as species might be in
-  different order in the duplicate reactions.
-- _retrRXN_ calls _makeDICT_ to generate a dictionary with information
-  about kinetic and mechanistic data as well as line numbers of the
-  duplicate reactions and passes them back to the main script together
-  with the file name.
+Version 2.0
+-----------
+- Julia script merging duplicate reactions directly from kpp file without the
+  need of the kpp warnings in a tee file
+- Additional option to write revised reactions to a different output file
+
+
+Version 1.0
+-----------
+- Python script merging duplicate reactions from the warning messages of the last
+  kpp run written to a tee file
