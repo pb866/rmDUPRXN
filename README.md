@@ -71,6 +71,10 @@ on l. 16 of `rmDUPRXN.jl`.
 Version history
 ===============
 
+Version 2.0.1
+-------------
+- bug fix sorting/comparing educts/products, which would miss some duplicate reactions
+
 Version 2.0
 -----------
 - Julia script merging duplicate reactions directly from kpp file without the
