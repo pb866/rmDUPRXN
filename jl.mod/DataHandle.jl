@@ -135,7 +135,7 @@ function merge_DUPL(label, educts, products, kindata)
     if kindata[i] != "//" # Ignore comments and empty lines
       for j = i+1:length(kindata)
         # Find reactions with equal educts and products
-        if educts[i] == educts[j] && products[i] == products[j]
+        if educts[i][:,2:3] == educts[j][:,2:3] && products[i][:,2:3] == products[j][:,2:3]
           # Combine the kinetic data
           if kindata[i] == kindata[j]
             kindata[i] = "2.0*("*kindata[i]*")"
@@ -263,7 +263,7 @@ function combine_spc(mat)
   end
 
   # Return revised species matrix sorted by species names
-  return mat = sortrows(mat, by=x->x[2])
+  return mat = sortrows(mat, by=x->x[3])
 end #function combine_spc
 
 end #module DataHandle
