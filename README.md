@@ -32,8 +32,9 @@ Using the script
 
 The script merges duplicate reactions in the file `ifile` and writes the revised
 mechanism to the file `ofile`. If `ofile` is obsolete, `ifile` will be overwritten.
-Additionally, you need to specify the `directory` of the `fhandle` module or the
-default folder path `/Applications/bin/data/jl.mod/` will be used.  
+Additionally, you need to specify the `directory` of the `fhandle` module or one of
+the default folder paths `/Applications/bin/data/jl.mod/` or `~/Util/auxdata/jl.mod`
+will be used.  
 If you omit the input file name, you will be ask for it during the execution of
 the script. Run the script with:
 
@@ -70,6 +71,11 @@ on l. 16 of `rmDUPRXN.jl`.
 
 Version history
 ===============
+
+Version 2.0.2
+-------------
+- Adjusted default directory, when not in `./mechanisms`: `../..`
+- Additional default LOAD_PATH: `~/Util/auxdata/jl.mod`
 
 Version 2.0.1
 -------------

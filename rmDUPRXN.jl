@@ -13,12 +13,14 @@ println("initialise...")
 # Define location of self-made modules
 # (use 3. script argument for general module path)
 try push!(LOAD_PATH,ARGS[3])
-catch push!(LOAD_PATH,"/Applications/bin/data/jl.mod")
+catch
+  push!(LOAD_PATH,"/Applications/bin/data/jl.mod")
+  push!(LOAD_PATH,"~/Util/auxdata/jl.mod")
 end
 # Assume either DSMACC/mechanisms or DSMACC/mechanisms/programs/rmDUPRXN
 # as current directory, other wise add/adjust folder path here:
 push!(LOAD_PATH,"./jl.mod"); push!(LOAD_PATH,"programs/rmDUPRXN/jl.mod")
-if splitdir(pwd())[2] != "mechanisms"  def_dir = "mechanisms"
+if splitdir(pwd())[2] != "mechanisms"  def_dir = "../.."
 else def_dir = "."
 end
 # Load modules/functions
